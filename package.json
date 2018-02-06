@@ -80,7 +80,7 @@
     "react-native-vector-icons": "4.4.2",
     "react-native-webview-bridge": "github:status-im/react-native-webview-bridge#react-native-0.49",
     "readable-stream": "1.1.14",
-    "realm": "2.0.7",
+    "realm": "github:rasom/realm-js#experiments/rn-threads",
     "stream-browserify": "1.0.0",
     "string_decoder": "0.10.31",
     "timers-browserify": "1.4.2",
@@ -88,7 +88,8 @@
     "url": "0.10.3",
     "vm-browserify": "0.0.4",
     "web3": "github:status-im/web3.js#status-develop",
-    "rn-snoopy": "github:status-im/rn-snoopy"
+    "rn-snoopy": "github:status-im/rn-snoopy",
+    "react-native-threads": "0.0.10"
   },
   "browser": {
     "crypto": "react-native-crypto",
