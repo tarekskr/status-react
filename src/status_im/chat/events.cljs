@@ -9,11 +9,9 @@
             [status-im.chat.models :as model]
             [status-im.chat.console :as console-chat]
             [status-im.chat.constants :as chat-const]
-            [status-im.data-store.messages :as msg-store]
             [status-im.data-store.contacts :as contacts-store]
             [status-im.data-store.chats :as chats-store]
             [status-im.data-store.contacts :as contacts-store]
-            [status-im.data-store.requests :as requests-store]
             [status-im.data-store.messages :as messages-store]
             [status-im.data-store.pending-messages :as pending-messages-store]
             [status-im.ui.screens.navigation :as navigation]
@@ -36,7 +34,7 @@
   :stored-unviewed-messages
   (fn [cofx _]
     (assoc cofx :stored-unviewed-messages
-           (msg-store/get-unviewed (-> cofx :db :current-public-key)))))
+           (messages-store/get-unviewed (-> cofx :db :current-public-key)))))
 
 (re-frame/reg-cofx
   :get-stored-message
@@ -255,9 +253,9 @@
 
 (handlers/register-handler-fx
   :show-mnemonic
-  [(re-frame/inject-cofx :get-stored-message) re-frame/trim-v]
-  (fn [{:keys [get-stored-message]} [mnemonic signing-phrase]]
-    (let [crazy-math-message? (get-stored-message chat-const/crazy-math-message-id)
+  [re-frame/trim-v]
+  (fn [{:keys [db]} [mnemonic signing-phrase]]
+    (let [crazy-math-message? (contains? (get-in db [:chats chat-const/console-chat-id]) chat-const/crazy-math-message-id)
           messages-events     (->> (console-chat/passphrase-messages mnemonic signing-phrase crazy-math-message?)
                                    (mapv #(vector :chat-received-message/add %)))]
       {:dispatch-n messages-events})))
@@ -265,16 +263,14 @@
 ;; TODO(alwx): can be simplified
 (handlers/register-handler-fx
   :account-generation-message
-  [(re-frame/inject-cofx :get-stored-message)]
-  (fn [{:keys [get-stored-message]} _]
-    (when-not (get-stored-message chat-const/passphrase-message-id)
+  (fn [{:keys [db]} _]
+    (when-not (contains? (get-in db [:chats chat-const/console-chat-id]) chat-const/passphrase-message-id)
       {:dispatch [:chat-received-message/add console-chat/account-generation-message]})))
 
 (handlers/register-handler-fx
   :move-to-internal-failure-message
-  [(re-frame/inject-cofx :get-stored-message)]
-  (fn [{:keys [get-stored-message]} _]
-    (when-not (get-stored-message chat-const/move-to-internal-failure-message-id)
+  (fn [{:keys [db]} _]
+    (when-not (contains? (get-in db [:chats chat-const/console-chat-id]) chat-const/move-to-internal-failure-message-id)
       {:dispatch [:chat-received-message/add console-chat/move-to-internal-failure-message]})))
 
 (handlers/register-handler-fx
