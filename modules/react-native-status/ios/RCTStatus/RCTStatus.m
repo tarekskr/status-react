@@ -144,6 +144,7 @@ RCT_EXPORT_METHOD(startNode:(NSString *)configString) {
 #if DEBUG
     NSLog(@"StartNode() method called");
 #endif
+    NSLog(@"PR3291: StartNode() method called");
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
     NSURL *rootUrl =[[fileManager
@@ -229,7 +230,7 @@ RCT_EXPORT_METHOD(startNode:(NSString *)configString) {
                    ^(void)
                    {
                        char *res = StartNode((char *) [resultingConfig UTF8String]);
-                       NSLog(@"StartNode result %@", [NSString stringWithUTF8String: res]);                   });
+                       NSLog(@"PR3291: StartNode result %@", [NSString stringWithUTF8String: res]);                   });
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -255,11 +256,12 @@ RCT_EXPORT_METHOD(stopNode) {
 #if DEBUG
     NSLog(@"StopNode() method called");
 #endif
+    NSLog(@"PR3291: StopNode() method called");
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
                    ^(void)
                    {
                        char *res = StopNode();
-                       NSLog(@"StopNode result %@", [NSString stringWithUTF8String: res]);
+                       NSLog(@"PR3291: StopNode result %@", [NSString stringWithUTF8String: res]);
                    });
 }
 
@@ -313,8 +315,9 @@ RCT_EXPORT_METHOD(login:(NSString *)address
                   password:(NSString *)password
                   callback:(RCTResponseSenderBlock)callback) {
 #if DEBUG
-    NSLog(@"Login() method called");
+    NSLog(@"PR3291: Login() method called");
 #endif
+    NSLog(@"PR3291: Login() method called");
     if(_jail != nil) {
         [_jail reset];
     }
@@ -388,9 +391,11 @@ RCT_EXPORT_METHOD(clearStorageAPIs) {
 
 RCT_EXPORT_METHOD(sendWeb3Request:(NSString *)payload
                   callback:(RCTResponseSenderBlock)callback) {
+    NSLog(@"PR3291: sendWeb3Request(%@)...", payload);
     dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         char * result = CallRPC((char *) [payload UTF8String]);
         dispatch_async( dispatch_get_main_queue(), ^{
+            NSLog(@"PR3291: sendWeb3Reques(%@... <- ", [NSString stringWithUTF8String: result]);
             callback(@[[NSString stringWithUTF8String: result]]);
         });
     });
