@@ -1,6 +1,7 @@
 (ns status-im.core
   (:require [status-im.utils.error-handler :as error-handler]
             [status-im.ui.components.react :as react]
+            [status-im.native-module.impl.module :as impl.module]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [status-im.native-module.core :as status]
@@ -16,5 +17,5 @@
   (error-handler/register-exception-handler!)
   (status/init-jail)
   (.registerComponent react/app-registry "StatusIm" #(reagent/reactify-component app-root))
-  (when @status-im.native-module.impl.module/jail-initialized?
+  (when @impl.module/jail-initialized?
     (re-frame/dispatch-sync [:initialize-app])))

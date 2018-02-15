@@ -27,6 +27,7 @@
             status-im.ui.screens.offline-messaging-settings.events
             [re-frame.core :as re-frame]
             [status-im.native-module.core :as status]
+            [status-im.native-module.impl.module :as impl.module]
             [status-im.ui.components.react :as react]
             [status-im.ui.components.permissions :as permissions]
             [status-im.constants :refer [console-chat-id]]
@@ -178,7 +179,7 @@
   ::jail-initialized
   (fn []
     ;; FIXME(dmitryn): refactor
-    (reset! status-im.native-module.impl.module/jail-initialized? true)))
+    (reset! impl.module/jail-initialized? true)))
 
 (re-frame/reg-fx
   ::request-permissions-fx
