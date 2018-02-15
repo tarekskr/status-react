@@ -175,6 +175,12 @@
     (status/module-initialized!)))
 
 (re-frame/reg-fx
+  ::jail-initialized
+  (fn []
+    ;; FIXME(dmitryn): refactor
+    (reset! status-im.native-module.impl.module/jail-initialized? true)))
+
+(re-frame/reg-fx
   ::request-permissions-fx
   (fn [[permissions then else]]
     (permissions/request-permissions permissions then else)))
@@ -222,14 +228,15 @@
 
 (handlers/register-handler-fx
   :initialize-app
-  (fn [_ _]
-    {::testfairy-alert nil
-     :dispatch-n       [[:initialize-db]
-                        [:load-accounts]
-                        [:check-console-chat]
-                        [:listen-to-network-status!]
-                        [:initialize-crypt]
-                        [:initialize-geth]]}))
+  (fn [{:keys [db]} _]
+    (cond-> {::testfairy-alert nil
+             :db               (assoc db :app-initialized? true)}
+            (not (:app-initialized? db)) (assoc :dispatch-n [[:initialize-db]
+                                                             [:load-accounts]
+                                                             [:check-console-chat]
+                                                             [:listen-to-network-status!]
+                                                             [:initialize-crypt]
+                                                             [:initialize-geth]]))))
 
 (handlers/register-handler-fx
   :initialize-db
@@ -383,6 +390,13 @@
   (fn [{:keys [db]} _]
     {:db                            (assoc db :status-module-initialized? true)
      ::status-module-initialized-fx nil}))
+
+(handlers/register-handler-fx
+  :jail-initialized
+  (fn [{:keys [db]} _]
+    {:db                (assoc db :jail-initialized? true)
+     ::jail-initialized nil
+     :dispatch          [:initialize-app]}))
 
 (handlers/register-handler-fx
   :status-node-started

@@ -14,7 +14,7 @@
             [status-im.utils.config :as config]
             [status-im.utils.notifications :as notifications]
             [status-im.core :as core]
-            [status-im.utils.snoopy :as snoopy]))
+            [status-im.utils.snoopy :as snoopy] ))
 
 (defn init-back-button-handler! []
   (let [new-listener (fn []

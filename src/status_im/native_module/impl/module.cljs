@@ -19,6 +19,8 @@
 ;; this flag helps to handle this
 (defonce module-initialized? (atom (or p/ios? js/goog.DEBUG)))
 
+(defonce jail-initialized? (atom false))
+
 ;; array of calls to StatusModule
 (defonce calls (atom []))
 
@@ -63,7 +65,8 @@
                                  "JavaScriptCore"
                                  "OttoVM")
                                " jail initialized")]
-          (.initJail status init-js' #(log/debug log-message)))))))
+          (.initJail status init-js' #(do (dispatch [:jail-initialized])
+                                          (log/debug log-message))))))))
 
 (defonce listener-initialized (atom false))
 

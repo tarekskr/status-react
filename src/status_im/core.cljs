@@ -16,4 +16,5 @@
   (error-handler/register-exception-handler!)
   (status/init-jail)
   (.registerComponent react/app-registry "StatusIm" #(reagent/reactify-component app-root))
-  (re-frame/dispatch-sync [:initialize-app]))
+  (when @status-im.native-module.impl.module/jail-initialized?
+    (re-frame/dispatch-sync [:initialize-app])))
